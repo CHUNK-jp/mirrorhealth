@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-gray-950 text-gray-100 antialiased;
+  }
+}
+
+/* Markdown rendering inside AI insights */
+.prose-health h1,
+.prose-health h2,
+.prose-health h3 {
+  @apply font-bold text-green-400 mt-4 mb-2;
+}
+.prose-health h1 { @apply text-xl; }
+.prose-health h2 { @apply text-lg; }
+.prose-health h3 { @apply text-base; }
+.prose-health p { @apply mb-3 leading-relaxed; }
+.prose-health ul { @apply list-disc pl-5 mb-3 space-y-1; }
+.prose-health ol { @apply list-decimal pl-5 mb-3 space-y-1; }
+.prose-health strong { @apply text-white font-semibold; }
+.prose-health code { @apply bg-gray-800 px-1 rounded text-sm; }
+.prose-health blockquote { @apply border-l-4 border-green-500 pl-3 italic text-gray-400; }
