@@ -2,11 +2,101 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --bg: #0d0d0d;
+  --bg2: #141414;
+  --border: #2a2a2a;
+  --text: #e8e8e8;
+  --muted: #888;
+  --accent: #7c6aff;
+  --accent2: #a08fff;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
 @layer base {
   body {
     @apply bg-gray-950 text-gray-100 antialiased;
   }
 }
+
+/* ─── NAV ─── */
+nav.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  height: 56px;
+  background: rgba(13, 13, 13, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+nav.site-nav .nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--text);
+  text-decoration: none;
+}
+
+nav.site-nav .nav-logo .org { color: var(--muted); }
+nav.site-nav .nav-logo .sep { color: var(--border); margin: 0 2px; }
+
+nav.site-nav .nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+nav.site-nav .nav-links a {
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+nav.site-nav .nav-links a:hover { color: var(--text); }
+
+nav.site-nav .btn-portal {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #1a1a1a;
+  border: 1px solid var(--border);
+  padding: 0.35rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  color: var(--text);
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+nav.site-nav .btn-portal:hover {
+  border-color: var(--accent);
+  color: var(--accent2);
+  background: rgba(124, 106, 255, 0.08);
+}
+
+nav.site-nav .btn-gh {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #1a1a1a;
+  border: 1px solid var(--border);
+  padding: 0.35rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  color: var(--text);
+  transition: border-color 0.15s, background 0.15s;
+}
+
+nav.site-nav .btn-gh:hover { border-color: #555; background: #222; }
 
 /* Markdown rendering inside AI insights */
 .prose-health h1,
