@@ -1,424 +1,376 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6582357233567372"
      crossorigin="anonymous"></script>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MirrorHealth — プライバシーファーストAI健康ダッシュボード</title>
-  <meta name="description" content="Apple Healthのデータをローカルで分析。クラウドに一切送信しないプライバシーファーストな健康AIダッシュボード。">
+  <title>MirrorHealth — your Apple Health data, finally making sense</title>
+  <meta name="description" content="MirrorHealth uses Ollama to analyze your Steps, Sleep, Heart Rate, and HRV entirely on your Mac. Zero data ever leaves your device.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg:      #0d0d0d;
-      --bg2:     #141414;
-      --bg3:     #1a1a1a;
-      --border:  #2a2a2a;
-      --text:    #e8e8e8;
-      --muted:   #888;
-      --accent:  #7c6aff;
-      --accent2: #a08fff;
-      --purple:  #a78bfa;
-      --red:     #f87171;
-      --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-      --font-sans: -apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-    }
     html { scroll-behavior: smooth; }
-    body {
-      font-family: var(--font-sans);
-      font-size: 15px;
-      line-height: 1.6;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      -webkit-font-smoothing: antialiased;
-    }
-    a { color: inherit; text-decoration: none; }
+    body { background: #09090B; color: #FAFAFA; font-family: 'Inter', system-ui, -apple-system, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: inherit; }
+    ::selection { background: rgba(59,130,246,0.25); color: #FAFAFA; }
+    ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: transparent; } ::-webkit-scrollbar-thumb { background: #27272A; border-radius: 3px; }
+    @keyframes pulse-dot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.45; transform: scale(0.8); } }
+    @keyframes fade-in-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes draw-ecg { from { stroke-dashoffset: 800; } to { stroke-dashoffset: 0; } }
 
-    /* NAV */
-    nav {
-      position: sticky; top: 0; z-index: 100;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 2rem; height: 56px;
-      background: rgba(13,13,13,0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-    }
-    .nav-logo {
-      font-family: var(--font-mono); font-size: 0.9rem; font-weight: 600;
-      display: flex; align-items: center; gap: 0.5rem;
-    }
-    .nav-logo .org { color: var(--muted); }
-    .nav-logo .sep { color: var(--border); margin: 0 2px; }
-    .nav-links { display: flex; align-items: center; gap: 1.2rem; }
-    .nav-links a { font-size: 0.83rem; color: var(--muted); transition: color 0.15s; }
-    .nav-links a:hover { color: var(--text); }
-    .btn-portal {
-      border: 1px solid var(--border); border-radius: 6px;
-      padding: 0.32rem 0.8rem; font-size: 0.82rem;
-      color: var(--muted) !important; background: transparent;
-      transition: border-color 0.15s, color 0.15s;
-      display: flex; align-items: center; gap: 0.4rem;
-    }
-    .btn-portal:hover { border-color: var(--accent); color: var(--accent2) !important; }
-    .btn-outline {
-      border: 1px solid var(--border); border-radius: 6px;
-      padding: 0.32rem 0.8rem; font-size: 0.82rem;
-      color: var(--text) !important; background: var(--bg3);
-      transition: border-color 0.15s, background 0.15s;
-      display: flex; align-items: center; gap: 0.4rem;
-    }
-    .btn-outline:hover { border-color: #555; background: #222; }
-    .btn-primary {
-      background: var(--accent); color: #000 !important; font-weight: 600;
-      border-radius: 6px; padding: 0.32rem 0.9rem; font-size: 0.82rem;
-      transition: opacity 0.15s; display: flex; align-items: center; gap: 0.4rem;
-    }
-    .btn-primary:hover { opacity: 0.88; }
+    .nav-link { font-size: 14px; color: #71717A; text-decoration: none; padding: 6px 12px; border-radius: 6px; transition: color 0.15s, background 0.15s; }
+    .nav-link:hover { color: #FAFAFA; background: #111113; }
 
-    /* HERO */
-    .hero {
-      max-width: 860px; margin: 0 auto;
-      padding: 5.5rem 2rem 4rem; text-align: center;
-    }
-    .hero-badge {
-      display: inline-flex; align-items: center; gap: 0.4rem;
-      background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3);
-      border-radius: 999px; padding: 0.28rem 0.9rem;
-      font-size: 0.76rem; color: var(--accent2);
-      margin-bottom: 1.8rem; letter-spacing: 0.03em;
-    }
-    .hero h1 {
-      font-size: clamp(2.4rem, 6vw, 4rem); font-weight: 700;
-      letter-spacing: -0.03em; line-height: 1.12; margin-bottom: 1.2rem;
-    }
-    .hero h1 .hl {
-      background: linear-gradient(90deg, var(--accent), #a3e635);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    }
-    .hero-sub {
-      font-size: 1.05rem; color: var(--muted);
-      max-width: 500px; margin: 0 auto 2.2rem; line-height: 1.75;
-    }
-    .hero-ctas { display: flex; align-items: center; justify-content: center; gap: 0.8rem; flex-wrap: wrap; }
-    .btn-hero-primary {
-      background: var(--accent); color: #000; font-weight: 700;
-      border-radius: 8px; padding: 0.75rem 1.6rem; font-size: 0.95rem;
-      transition: opacity 0.15s; display: inline-flex; align-items: center; gap: 0.5rem;
-    }
-    .btn-hero-primary:hover { opacity: 0.88; }
-    .btn-hero-secondary {
-      border: 1px solid var(--border); border-radius: 8px; padding: 0.72rem 1.4rem;
-      font-size: 0.92rem; color: var(--muted); background: var(--bg2);
-      transition: border-color 0.15s, color 0.15s;
-      display: inline-flex; align-items: center; gap: 0.5rem;
-    }
-    .btn-hero-secondary:hover { border-color: #555; color: var(--text); }
+    .btn-primary { display: inline-flex; align-items: center; gap: 8px; background: #3B82F6; color: #fff; font-size: 13px; font-weight: 500; padding: 8px 18px; border-radius: 8px; text-decoration: none; flex-shrink: 0; letter-spacing: -0.01em; transition: background 0.15s; }
+    .btn-primary:hover { background: #2563EB; }
 
-    /* PREVIEW */
-    .preview-wrap {
-      max-width: 820px; margin: 0 auto; padding: 0 2rem 4rem;
-    }
-    .preview-card {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: 16px; overflow: hidden;
-      box-shadow: 0 24px 64px rgba(34,197,94,0.08);
-    }
-    .preview-bar {
-      background: var(--bg3); border-bottom: 1px solid var(--border);
-      padding: 0.7rem 1rem; display: flex; align-items: center; gap: 0.5rem;
-    }
-    .dot-r { width:10px;height:10px;border-radius:50%;background:#ff5f57; }
-    .dot-y { width:10px;height:10px;border-radius:50%;background:#febc2e; }
-    .dot-g { width:10px;height:10px;border-radius:50%;background:#28c840; }
-    .preview-url {
-      flex:1; text-align:center; font-family: var(--font-mono);
-      font-size: 0.72rem; color: var(--muted);
-    }
-    .preview-body { padding: 1.5rem; }
-    /* Mock dashboard inside preview */
-    .mock-metrics {
-      display: grid; grid-template-columns: repeat(5,1fr); gap: 0.6rem; margin-bottom: 1.2rem;
-    }
-    .mock-metric {
-      background: var(--bg3); border: 1px solid var(--border);
-      border-radius: 10px; padding: 0.7rem 0.8rem;
-    }
-    .mock-metric .mm-label { font-size: 0.68rem; color: var(--muted); margin-bottom: 0.3rem; }
-    .mock-metric .mm-val { font-size: 1.1rem; font-weight: 700; font-family: var(--font-mono); }
-    .mock-charts { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
-    .mock-chart {
-      background: var(--bg3); border: 1px solid var(--border);
-      border-radius: 10px; padding: 0.8rem 1rem;
-    }
-    .mock-chart-title { font-size: 0.72rem; color: var(--muted); margin-bottom: 0.6rem; }
-    .mock-chart svg { display: block; }
+    .btn-secondary { display: inline-flex; align-items: center; gap: 8px; background: transparent; color: #A1A1AA; font-size: 15px; font-weight: 500; padding: 14px 24px; border-radius: 10px; border: 1px solid #27272A; text-decoration: none; transition: border-color 0.15s, color 0.15s; }
+    .btn-secondary:hover { border-color: #3F3F46; color: #FAFAFA; }
 
-    /* FEATURES */
-    .features { max-width: 860px; margin: 0 auto; padding: 4rem 2rem; }
-    .section-label {
-      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em;
-      text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem;
-    }
-    .section-title {
-      font-size: clamp(1.6rem,3.5vw,2.4rem); font-weight: 700;
-      letter-spacing: -0.02em; margin-bottom: 0.5rem;
-    }
-    .section-sub { color: var(--muted); font-size: 0.95rem; margin-bottom: 2.5rem; }
-    .features-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(240px,1fr)); gap: 1.1rem; }
-    .feature-card {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: 12px; padding: 1.4rem 1.5rem;
-    }
-    .feature-icon { font-size: 1.6rem; margin-bottom: 0.8rem; }
-    .feature-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.4rem; }
-    .feature-desc { font-size: 0.83rem; color: var(--muted); line-height: 1.65; }
+    .btn-hero-primary { display: inline-flex; align-items: center; gap: 10px; background: #3B82F6; color: #fff; font-size: 15px; font-weight: 600; padding: 14px 28px; border-radius: 10px; text-decoration: none; letter-spacing: -0.01em; transition: background 0.15s; }
+    .btn-hero-primary:hover { background: #2563EB; }
 
-    /* SETUP */
-    .setup { background: var(--bg2); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
-    .setup-inner { max-width: 760px; margin: 0 auto; padding: 4rem 2rem; }
-    .steps { display: flex; flex-direction: column; gap: 1.2rem; margin-top: 2rem; }
-    .step {
-      display: flex; gap: 1.2rem; align-items: flex-start;
-      background: var(--bg3); border: 1px solid var(--border);
-      border-radius: 12px; padding: 1.2rem 1.4rem;
-    }
-    .step-num {
-      width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
-      background: rgba(34,197,94,0.15); border: 1px solid rgba(34,197,94,0.4);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.8rem; font-weight: 700; color: var(--accent);
-      margin-top: 2px;
-    }
-    .step-body {}
-    .step-title { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.4rem; }
-    .step-desc { font-size: 0.83rem; color: var(--muted); line-height: 1.65; }
-    pre {
-      background: #0a0a0a; border: 1px solid var(--border);
-      border-radius: 8px; padding: 0.8rem 1rem;
-      font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent2);
-      margin-top: 0.6rem; overflow-x: auto; white-space: pre;
-    }
+    .metric-card { padding: 40px; background: #111113; border: 1px solid #18181B; border-radius: 16px; display: flex; gap: 28px; align-items: flex-start; transition: border-color 0.15s; }
+    .metric-card:hover { border-color: #27272A; }
 
-    /* CTA */
-    .cta-section {
-      max-width: 680px; margin: 0 auto;
-      padding: 5rem 2rem; text-align: center;
-    }
-    .cta-section h2 {
-      font-size: clamp(1.6rem,3.5vw,2.2rem); font-weight: 700;
-      letter-spacing: -0.02em; margin-bottom: 0.8rem;
-    }
-    .cta-section p { color: var(--muted); margin-bottom: 2rem; font-size: 0.95rem; }
-    .cta-btns { display: flex; align-items: center; justify-content: center; gap: 0.8rem; flex-wrap: wrap; }
+    .ollama-link { display: inline-flex; align-items: center; gap: 8px; background: #18181B; color: #A1A1AA; font-size: 13px; font-weight: 500; padding: 10px 18px; border-radius: 8px; border: 1px solid #27272A; text-decoration: none; flex-shrink: 0; transition: border-color 0.15s, color 0.15s; }
+    .ollama-link:hover { border-color: #3F3F46; color: #FAFAFA; }
 
-    /* FOOTER */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 2rem; text-align: center;
-      font-size: 0.82rem; color: var(--muted); margin-top: auto;
-    }
-    .footer-links { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
-    footer a { color: var(--accent); transition: opacity 0.15s; }
-    footer a:hover { opacity: 0.75; }
+    .btn-cta-primary { display: inline-flex; align-items: center; gap: 10px; background: #3B82F6; color: #fff; font-size: 16px; font-weight: 600; padding: 16px 32px; border-radius: 12px; text-decoration: none; letter-spacing: -0.01em; transition: background 0.15s; }
+    .btn-cta-primary:hover { background: #2563EB; }
 
-    @media (max-width: 600px) {
-      .mock-metrics { grid-template-columns: repeat(3,1fr); }
-      .mock-charts  { grid-template-columns: 1fr; }
-      .features-grid { grid-template-columns: 1fr; }
-      nav { padding: 0 1.2rem; }
-    }
+    .btn-cta-secondary { display: inline-flex; align-items: center; gap: 8px; background: #18181B; color: #A1A1AA; font-size: 16px; font-weight: 500; padding: 16px 28px; border-radius: 12px; border: 1px solid #27272A; text-decoration: none; transition: border-color 0.15s, color 0.15s; }
+    .btn-cta-secondary:hover { border-color: #3F3F46; color: #FAFAFA; }
+
+    .footer-link { font-size: 13px; color: #52525B; text-decoration: none; padding: 4px 10px; border-radius: 5px; transition: color 0.15s; }
+    .footer-link:hover { color: #A1A1AA; }
   </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <a class="nav-logo" href="#">
-    <span class="org">CHUNK-jp</span>
-    <span class="sep">/</span>
-    <span>mirrorhealth</span>
-  </a>
-  <div class="nav-links">
-    <a class="btn-portal" href="https://chunk-jp.github.io/" target="_blank" rel="noopener">← CHUNK-jp Portal</a>
-    <a class="btn-outline" href="https://github.com/CHUNK-jp/mirrorhealth" target="_blank" rel="noopener">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-      GitHub
-    </a>
-  </div>
-</nav>
+<div style="min-height: 100vh; background: #09090B; color: #FAFAFA; font-family: 'Inter', system-ui, sans-serif;">
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-badge">🔒 完全ローカル処理 &nbsp;·&nbsp; クラウド送信ゼロ &nbsp;·&nbsp; 無料・オープンソース</div>
-  <h1>あなたの健康データを、<br><span class="hl">あなただけのAIが</span><br>読み解く。</h1>
-  <p class="hero-sub">Apple Healthのデータをアップロードするだけ。ローカルAI（Ollama）が歩数・睡眠・心拍・HRVを分析し、パーソナライズされたインサイトを生成。データは一切外部に送信されません。</p>
-  <div class="hero-ctas">
-    <a class="btn-hero-primary" href="https://github.com/CHUNK-jp/mirrorhealth" target="_blank" rel="noopener">
-      ⬇ GitHubで入手する
-    </a>
-    <a class="btn-hero-secondary" href="#setup">
-      セットアップ方法 →
-    </a>
-  </div>
-</section>
-
-<!-- PREVIEW (mock dashboard) -->
-<div class="preview-wrap">
-  <div class="preview-card">
-    <div class="preview-bar">
-      <div class="dot-r"></div><div class="dot-y"></div><div class="dot-g"></div>
-      <div class="preview-url">localhost:3000 — MirrorHealth</div>
-    </div>
-    <div class="preview-body">
-      <div class="mock-metrics">
-        <div class="mock-metric">
-          <div class="mm-label">📶 平均歩数</div>
-          <div class="mm-val" style="color:#60a5fa">8,432<span style="font-size:0.6rem;color:var(--muted)"> 歩</span></div>
+  <!-- ── NAVIGATION ── -->
+  <nav style="position: sticky; top: 0; z-index: 100;">
+    <div style="background: rgba(9,9,11,0.85); border-bottom: 1px solid #18181B; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);">
+      <div style="max-width: 1100px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; height: 64px; gap: 40px;">
+        <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
+          <div style="width: 32px; height: 32px; background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="17" height="17">
+              <path d="M2 12h4l2.5-6 5 13 3-9 2.5 5L21 12h1"/>
+            </svg>
+          </div>
+          <span style="font-size: 15px; font-weight: 600; letter-spacing: -0.01em;">MirrorHealth</span>
         </div>
-        <div class="mock-metric">
-          <div class="mm-label">❤️ 心拍数</div>
-          <div class="mm-val" style="color:#f87171">72<span style="font-size:0.6rem;color:var(--muted)"> bpm</span></div>
+        <div style="display: flex; align-items: center; gap: 4px; flex: 1;">
+          <a class="nav-link" href="#how-it-works">How it works</a>
+          <a class="nav-link" href="#metrics">Metrics</a>
+          <a class="nav-link" href="#privacy">Privacy</a>
+          <a class="nav-link" href="https://github.com/CHUNK-jp/mirrorhealth" target="_blank" rel="noopener">GitHub</a>
         </div>
-        <div class="mock-metric">
-          <div class="mm-label">🌙 睡眠</div>
-          <div class="mm-val" style="color:#a78bfa">7.4<span style="font-size:0.6rem;color:var(--muted)"> h</span></div>
-        </div>
-        <div class="mock-metric">
-          <div class="mm-label">💚 HRV</div>
-          <div class="mm-val" style="color:#4ade80">48<span style="font-size:0.6rem;color:var(--muted)"> ms</span></div>
-        </div>
-        <div class="mock-metric">
-          <div class="mm-label">⚡ Energy</div>
-          <div class="mm-val" style="color:#fbbf24">512<span style="font-size:0.6rem;color:var(--muted)"> kcal</span></div>
-        </div>
-      </div>
-      <div class="mock-charts">
-        <div class="mock-chart">
-          <div class="mock-chart-title">📶 日別歩数（30日）</div>
-          <svg viewBox="0 0 260 60" width="100%" height="60">
-            <polyline points="0,50 20,42 40,38 60,44 80,28 100,22 120,30 140,18 160,24 180,14 200,20 220,10 240,16 260,8"
-              stroke="#3b82f6" stroke-width="2" fill="none" stroke-linecap="round"/>
-            <polyline points="0,50 20,42 40,38 60,44 80,28 100,22 120,30 140,18 160,24 180,14 200,20 220,10 240,16 260,8 260,60 0,60"
-              fill="#3b82f6" fill-opacity="0.08"/>
-          </svg>
-        </div>
-        <div class="mock-chart">
-          <div class="mock-chart-title">🌙 睡眠時間（30日）</div>
-          <svg viewBox="0 0 260 60" width="100%" height="60">
-            <polyline points="0,30 20,28 40,32 60,20 80,38 100,22 120,18 140,26 160,16 180,30 200,14 220,22 240,18 260,20"
-              stroke="#a78bfa" stroke-width="2" fill="none" stroke-linecap="round"/>
-            <polyline points="0,30 20,28 40,32 60,20 80,38 100,22 120,18 140,26 160,16 180,30 200,14 220,22 240,18 260,20 260,60 0,60"
-              fill="#a78bfa" fill-opacity="0.08"/>
-          </svg>
-        </div>
+        <a class="btn-primary" href="https://github.com/CHUNK-jp/mirrorhealth" target="_blank" rel="noopener">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><path d="M8 2v8M5 7l3 3 3-3"/><path d="M2 12h12"/></svg>
+          Get it on GitHub
+        </a>
       </div>
     </div>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section style="position: relative; padding: 120px 24px 100px; text-align: center; overflow: hidden;">
+    <div style="position: absolute; inset: 0; background: radial-gradient(ellipse 70% 55% at 50% -5%, rgba(59,130,246,0.09) 0%, transparent 70%); pointer-events: none;"></div>
+    <div style="position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.016) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.016) 1px, transparent 1px); background-size: 44px 44px; pointer-events: none; mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 0%, transparent 75%); -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 0%, transparent 75%);"></div>
+
+    <div style="position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: 100%; max-width: 900px; pointer-events: none;">
+      <svg viewBox="0 0 900 72" fill="none" width="100%" height="72">
+        <path d="M0 44 H280 L295 44 L308 14 L330 68 L342 44 L354 58 L366 38 L378 44 H900" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="800" style="animation: draw-ecg 2.2s cubic-bezier(0.4,0,0.2,1) 0.3s both; opacity: 0.15;"/>
+      </svg>
+    </div>
+
+    <div style="position: relative; max-width: 820px; margin: 0 auto; animation: fade-in-up 0.6s ease both;">
+      <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.18); border-radius: 100px; padding: 6px 16px; margin-bottom: 36px;">
+        <div style="width: 6px; height: 6px; border-radius: 50%; background: #3B82F6; animation: pulse-dot 2.4s ease-in-out infinite;"></div>
+        <span style="font-size: 13px; color: #60A5FA; font-weight: 500; letter-spacing: -0.01em;">Local AI · Apple Health · macOS</span>
+      </div>
+
+      <h1 style="font-size: 72px; font-weight: 700; line-height: 1.0; letter-spacing: -0.04em; margin-bottom: 24px; text-wrap: balance;">
+        Your Apple Health data,<br>finally making <span style="color: #3B82F6;">sense</span>.
+      </h1>
+
+      <p style="font-size: 19px; color: #71717A; line-height: 1.65; max-width: 540px; margin: 0 auto 52px; font-weight: 400;">
+        MirrorHealth uses Ollama to analyze your Steps, Sleep, Heart Rate, and HRV — entirely on your Mac. Personalized insights, with zero data ever leaving your device.
+      </p>
+
+      <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;">
+        <a href="https://github.com/CHUNK-jp/mirrorhealth" target="_blank" rel="noopener" class="btn-hero-primary">
+          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M10 3v10M6 9l4 4 4-4"/><path d="M3 15h14"/></svg>
+          Get it on GitHub — Free
+        </a>
+        <a href="#how-it-works" class="btn-secondary">
+          See how it works
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
+        </a>
+      </div>
+      <p style="font-size: 13px; color: #52525B;">macOS 12 Ventura or later · Requires Ollama · No account needed</p>
+    </div>
+  </section>
+
+  <!-- ── STATS STRIP ── -->
+  <div style="border-top: 1px solid #18181B; border-bottom: 1px solid #18181B; background: #0C0C0E;">
+    <div style="max-width: 1100px; margin: 0 auto; padding: 0 24px; display: grid; grid-template-columns: repeat(3, 1fr);">
+      <div style="padding: 44px 40px; text-align: center; border-right: 1px solid #18181B;">
+        <div style="font-size: 48px; font-weight: 700; letter-spacing: -0.04em; color: #FAFAFA;">&lt;60sec</div>
+        <div style="font-size: 14px; color: #71717A; margin-top: 8px;">Full analysis on MacBook Air</div>
+      </div>
+      <div style="padding: 44px 40px; text-align: center; border-right: 1px solid #18181B;">
+        <div style="font-size: 48px; font-weight: 700; letter-spacing: -0.04em; color: #FAFAFA;">4</div>
+        <div style="font-size: 14px; color: #71717A; margin-top: 8px;">Health metrics analyzed deeply</div>
+      </div>
+      <div style="padding: 44px 40px; text-align: center;">
+        <div style="font-size: 48px; font-weight: 700; letter-spacing: -0.04em; color: #FAFAFA;">0 bytes</div>
+        <div style="font-size: 14px; color: #71717A; margin-top: 8px;">Sent to any external server</div>
+      </div>
+    </div>
   </div>
+
+  <!-- ── HOW IT WORKS ── -->
+  <section id="how-it-works" style="padding: 120px 24px;">
+    <div style="max-width: 1100px; margin: 0 auto;">
+      <div style="text-align: center; margin-bottom: 72px;">
+        <div style="display: inline-block; font-size: 11px; font-weight: 600; color: #52525B; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px;">Getting started</div>
+        <h2 style="font-size: 48px; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 16px;">Three steps to clarity.</h2>
+        <p style="font-size: 18px; color: #71717A; max-width: 400px; margin: 0 auto; line-height: 1.6;">From export to insights in under a minute — no setup, no accounts, no waiting.</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; position: relative;">
+        <div style="position: absolute; top: 40px; left: calc(33.33% + 22px); right: calc(33.33% + 22px); height: 1px; background: linear-gradient(90deg, transparent, #3B82F6 30%, #3B82F6 70%, transparent); pointer-events: none;"></div>
+
+        <div style="padding: 0 32px; text-align: center;">
+          <div style="width: 80px; height: 80px; margin: 0 auto 28px; background: #111113; border: 1px solid #27272A; border-radius: 20px; display: flex; align-items: center; justify-content: center; position: relative; z-index: 1;">
+            <svg viewBox="0 0 32 32" fill="none" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="32" height="32">
+              <path d="M16 22V10M10 16l6-6 6 6"/>
+              <path d="M6 26h20"/>
+              <rect x="4" y="4" width="24" height="24" rx="4" stroke-opacity="0.15"/>
+            </svg>
+            <div style="position: absolute; top: -10px; right: -10px; width: 22px; height: 22px; background: #3B82F6; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; border: 2px solid #09090B;">1</div>
+          </div>
+          <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 12px; letter-spacing: -0.01em;">Export &amp; Upload</h3>
+          <p style="font-size: 14px; color: #71717A; line-height: 1.7;">Export your Apple Health data from the Health app on iPhone. Drop the ZIP file into MirrorHealth — that's it.</p>
+        </div>
+
+        <div style="padding: 0 32px; text-align: center;">
+          <div style="width: 80px; height: 80px; margin: 0 auto 28px; background: #111113; border: 1px solid #27272A; border-radius: 20px; display: flex; align-items: center; justify-content: center; position: relative; z-index: 1;">
+            <svg viewBox="0 0 32 32" fill="none" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="32" height="32">
+              <rect x="4" y="4" width="24" height="24" rx="4" stroke-opacity="0.15"/>
+              <path d="M4 16h5l3-7 6 16 4-11 3 5 3-3h3"/>
+            </svg>
+            <div style="position: absolute; top: -10px; right: -10px; width: 22px; height: 22px; background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #60A5FA; border: 2px solid #09090B;">2</div>
+          </div>
+          <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 12px; letter-spacing: -0.01em;">Local AI Analysis</h3>
+          <p style="font-size: 14px; color: #71717A; line-height: 1.7;">Ollama runs directly on your Mac, reading your health patterns. No internet connection required. Your data never moves.</p>
+        </div>
+
+        <div style="padding: 0 32px; text-align: center;">
+          <div style="width: 80px; height: 80px; margin: 0 auto 28px; background: #111113; border: 1px solid #27272A; border-radius: 20px; display: flex; align-items: center; justify-content: center; position: relative; z-index: 1;">
+            <svg viewBox="0 0 32 32" fill="none" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="32" height="32">
+              <rect x="4" y="4" width="24" height="24" rx="4" stroke-opacity="0.15"/>
+              <path d="M10 20l4-8 4 6 3-4 3 6"/>
+              <circle cx="22" cy="11" r="2" fill="#3B82F6" stroke="none"/>
+            </svg>
+            <div style="position: absolute; top: -10px; right: -10px; width: 22px; height: 22px; background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.3); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #60A5FA; border: 2px solid #09090B;">3</div>
+          </div>
+          <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 12px; letter-spacing: -0.01em;">Your Insights</h3>
+          <p style="font-size: 14px; color: #71717A; line-height: 1.7;">Read personalized summaries of your health patterns. Understand trends, spot anomalies, and track progress — privately.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── HEALTH METRICS ── -->
+  <section id="metrics" style="padding: 0 24px 120px;">
+    <div style="max-width: 1100px; margin: 0 auto;">
+      <div style="text-align: center; margin-bottom: 64px;">
+        <div style="display: inline-block; font-size: 11px; font-weight: 600; color: #52525B; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px;">What we analyze</div>
+        <h2 style="font-size: 48px; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 16px;">Four metrics.<br>One complete picture.</h2>
+        <p style="font-size: 18px; color: #71717A; max-width: 420px; margin: 0 auto; line-height: 1.6;">The metrics that matter most, analyzed together so you understand the full story.</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;">
+
+        <div class="metric-card">
+          <div style="width: 52px; height: 52px; background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="24" height="24">
+              <path d="M6 20v-4M10 20v-8M14 20v-5M18 20v-11"/>
+            </svg>
+          </div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+              <h3 style="font-size: 19px; font-weight: 600; letter-spacing: -0.01em;">Steps</h3>
+              <span style="font-size: 11px; font-weight: 500; color: #22C55E; background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.2); padding: 2px 9px; border-radius: 100px;">Activity</span>
+            </div>
+            <p style="font-size: 14px; color: #71717A; line-height: 1.7; margin-bottom: 16px;">Daily activity patterns, 7-day and 30-day averages, streak tracking, and movement goal analysis with personalized recommendations.</p>
+            <div style="font-size: 12px; color: #52525B; font-family: 'JetBrains Mono', monospace;">Daily totals · Trends · Streaks · Weekly patterns</div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div style="width: 52px; height: 52px; background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="24" height="24">
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+            </svg>
+          </div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+              <h3 style="font-size: 19px; font-weight: 600; letter-spacing: -0.01em;">Sleep</h3>
+              <span style="font-size: 11px; font-weight: 500; color: #8B5CF6; background: rgba(139,92,246,0.1); border: 1px solid rgba(139,92,246,0.2); padding: 2px 9px; border-radius: 100px;">Recovery</span>
+            </div>
+            <p style="font-size: 14px; color: #71717A; line-height: 1.7; margin-bottom: 16px;">Sleep duration trends, bedtime consistency scoring, and correlation with next-day activity levels. Understand what quality rest looks like for you.</p>
+            <div style="font-size: 12px; color: #52525B; font-family: 'JetBrains Mono', monospace;">Duration · Consistency · Timing · Quality index</div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div style="width: 52px; height: 52px; background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="24" height="24">
+              <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+            </svg>
+          </div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+              <h3 style="font-size: 19px; font-weight: 600; letter-spacing: -0.01em;">Heart Rate</h3>
+              <span style="font-size: 11px; font-weight: 500; color: #EF4444; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2); padding: 2px 9px; border-radius: 100px;">Vitals</span>
+            </div>
+            <p style="font-size: 14px; color: #71717A; line-height: 1.7; margin-bottom: 16px;">Resting heart rate trends over time, elevated readings correlation with stress or illness, and cardiovascular fitness trajectory.</p>
+            <div style="font-size: 12px; color: #52525B; font-family: 'JetBrains Mono', monospace;">Resting HR · Daily range · Trends · Anomalies</div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div style="width: 52px; height: 52px; background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="24" height="24">
+              <path d="M2 12h3l2-5 4 11 3-8 2 4 2-2h4"/>
+            </svg>
+          </div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+              <h3 style="font-size: 19px; font-weight: 600; letter-spacing: -0.01em;">HRV</h3>
+              <span style="font-size: 11px; font-weight: 500; color: #3B82F6; background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.2); padding: 2px 9px; border-radius: 100px;">Recovery</span>
+            </div>
+            <p style="font-size: 14px; color: #71717A; line-height: 1.7; margin-bottom: 16px;">Heart Rate Variability as a window into recovery status, autonomic nervous system balance, and readiness for training or high-demand days.</p>
+            <div style="font-size: 12px; color: #52525B; font-family: 'JetBrains Mono', monospace;">SDNN · Trends · Recovery score · Baseline</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PRIVACY / AI TRUST ── -->
+  <section id="privacy" style="padding: 0 24px 120px;">
+    <div style="max-width: 1100px; margin: 0 auto;">
+      <div style="background: #0E0E10; border: 1px solid #18181B; border-radius: 20px; overflow: hidden;">
+
+        <div style="padding: 72px 64px; border-bottom: 1px solid #18181B; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;">
+          <div>
+            <div style="display: inline-block; font-size: 11px; font-weight: 600; color: #52525B; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 20px;">Privacy first</div>
+            <h2 style="font-size: 40px; font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 24px; text-wrap: balance;">Your health data is the most personal data you own.</h2>
+            <p style="font-size: 16px; color: #71717A; line-height: 1.75; margin-bottom: 24px;">That's why MirrorHealth never sends a single byte to any external server. Not to us, not to OpenAI, not to anyone. The AI runs locally, the analysis stays local, and the insights are yours alone.</p>
+            <div style="display: flex; align-items: center; gap: 10px; padding: 16px 20px; background: rgba(59,130,246,0.06); border: 1px solid rgba(59,130,246,0.15); border-radius: 10px;">
+              <svg viewBox="0 0 20 20" fill="none" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+                <path d="M10 2L2 6.5v4C2 15 5.5 19.5 10 21c4.5-1.5 8-6 8-10.5v-4L10 2z"/>
+                <path d="M7 10l2 2 4-4"/>
+              </svg>
+              <span style="font-size: 14px; color: #A1A1AA; font-weight: 400;">Zero data collection · Zero telemetry · Open source</span>
+            </div>
+          </div>
+
+          <div style="text-align: center;">
+            <div style="display: inline-flex; flex-direction: column; align-items: center; gap: 12px; padding: 48px 56px; background: #09090B; border: 1px solid #27272A; border-radius: 16px; position: relative; overflow: hidden;">
+              <div style="position: absolute; inset: 0; background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(59,130,246,0.06) 0%, transparent 70%); pointer-events: none;"></div>
+              <div style="font-size: 72px; font-weight: 700; letter-spacing: -0.04em; color: #FAFAFA; line-height: 1; position: relative;">100%</div>
+              <div style="font-size: 18px; font-weight: 500; color: #3B82F6; letter-spacing: -0.01em; position: relative;">Local</div>
+              <div style="width: 40px; height: 1px; background: #27272A;"></div>
+              <div style="font-size: 14px; color: #71717A; position: relative; text-align: center; line-height: 1.5;">Everything runs on<br>your Mac. Always.</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding: 40px 64px; display: flex; align-items: center; gap: 32px; flex-wrap: wrap;">
+          <div style="width: 44px; height: 44px; background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
+              <rect x="4" y="8" width="16" height="10" rx="2"/>
+              <path d="M8 8V6a2 2 0 014 0v2"/>
+              <path d="M12 13v2"/>
+              <circle cx="12" cy="12" r="1" fill="#3B82F6" stroke="none"/>
+            </svg>
+          </div>
+          <div style="flex: 1; min-width: 240px;">
+            <div style="font-size: 15px; font-weight: 600; margin-bottom: 4px; letter-spacing: -0.01em;">Powered by Ollama</div>
+            <p style="font-size: 14px; color: #71717A; line-height: 1.6;">Ollama is an open-source runtime that executes large language models locally on your hardware. No API keys, no subscriptions, no outbound connections — just AI running on your Mac.</p>
+          </div>
+          <a href="https://ollama.ai" target="_blank" rel="noopener" class="ollama-link">
+            Learn about Ollama
+            <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M3 11L11 3M6 3h5v5"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ── -->
+  <section style="padding: 0 24px 120px;">
+    <div style="max-width: 1100px; margin: 0 auto;">
+      <div style="text-align: center; padding: 80px 48px; background: #111113; border: 1px solid #1E1E23; border-radius: 20px; position: relative; overflow: hidden;">
+        <div style="position: absolute; inset: 0; background: radial-gradient(ellipse 50% 60% at 50% 0%, rgba(59,130,246,0.07) 0%, transparent 70%); pointer-events: none;"></div>
+        <div style="position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 1px; height: 80px; background: linear-gradient(to bottom, #3B82F6, transparent);"></div>
+        <div style="position: relative;">
+          <div style="margin: 0 auto 28px; width: 200px; opacity: 0.25;">
+            <svg viewBox="0 0 200 40" fill="none" width="200" height="40">
+              <path d="M0 20 H60 L68 20 L74 5 L84 38 L90 20 L96 28 L102 18 L108 20 H200" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div style="display: inline-block; font-size: 11px; font-weight: 600; color: #52525B; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 20px;">Get started</div>
+          <h2 style="font-size: 52px; font-weight: 700; letter-spacing: -0.03em; margin-bottom: 16px; text-wrap: balance;">Your health story.<br>Finally told privately.</h2>
+          <p style="font-size: 18px; color: #71717A; margin-bottom: 44px; line-height: 1.6; max-width: 420px; margin-left: auto; margin-right: auto;">Join others who believe health insights shouldn't come at the cost of privacy.</p>
+          <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px;">
+            <a href="https://github.com/CHUNK-jp/mirrorhealth" target="_blank" rel="noopener" class="btn-cta-primary">
+              <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="17" height="17"><path d="M10 3v10M6 9l4 4 4-4"/><path d="M3 15h14"/></svg>
+              Get it on GitHub — Free
+            </a>
+            <a href="https://github.com/CHUNK-jp/mirrorhealth/issues" target="_blank" rel="noopener" class="btn-cta-secondary">View source on GitHub</a>
+          </div>
+          <p style="font-size: 13px; color: #52525B;">macOS 12 Ventura or later · Requires Ollama · No account · No credit card</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer style="border-top: 1px solid #18181B; padding: 40px 24px;">
+    <div style="max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 24px;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="width: 28px; height: 28px; background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.18); border-radius: 6px; display: flex; align-items: center; justify-content: center;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+            <path d="M2 12h4l2.5-6 5 13 3-9 2.5 5L21 12h1"/>
+          </svg>
+        </div>
+        <span style="font-size: 14px; font-weight: 600;">MirrorHealth</span>
+        <span style="font-size: 13px; color: #3F3F46;">Part of the <a href="https://chunk-jp.github.io/" style="color: inherit; text-decoration: underline;">CHUNK-jp</a> tools suite</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 4px;">
+        <a class="footer-link" href="#how-it-works">How it works</a>
+        <a class="footer-link" href="#metrics">Metrics</a>
+        <a class="footer-link" href="https://github.com/CHUNK-jp/mirrorhealth" target="_blank" rel="noopener">GitHub</a>
+        <a class="footer-link" href="/privacy.html">Privacy</a>
+        <a class="footer-link" href="/contact.html">Contact</a>
+      </div>
+      <div style="font-size: 13px; color: #3F3F46;">© 2026 MirrorHealth · Your data stays yours.</div>
+    </div>
+  </footer>
+
 </div>
-
-<!-- FEATURES -->
-<section class="features" id="features">
-  <div class="section-label">Features</div>
-  <h2 class="section-title">なぜMirrorHealthか。</h2>
-  <p class="section-sub">既存の健康アプリはあなたのデータをクラウドに送り、広告やサブスクで収益化します。MirrorHealthは違います。</p>
-  <div class="features-grid">
-    <div class="feature-card">
-      <div class="feature-icon">🔒</div>
-      <div class="feature-title">完全ローカル処理</div>
-      <div class="feature-desc">すべてのデータ処理はあなたのデバイス上で完結。外部サーバーへの送信はゼロ。ネット接続不要でも動作します。</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🤖</div>
-      <div class="feature-title">ローカルAI分析</div>
-      <div class="feature-desc">Ollama経由でLLMがあなたの健康トレンドを深く分析。歩数・睡眠・HRVの傾向から具体的なアドバイスを生成します。</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">📊</div>
-      <div class="feature-title">美しいダッシュボード</div>
-      <div class="feature-desc">90日分の歩数・心拍・睡眠・HRV・消費カロリーをインタラクティブなチャートで可視化。7日平均も一目でわかります。</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">📱</div>
-      <div class="feature-title">Apple Health対応</div>
-      <div class="feature-desc">iPhoneのヘルスケアアプリからエクスポートしたexport.xmlをドロップするだけ。インポート操作は一切不要。</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🌐</div>
-      <div class="feature-title">日本語・英語対応</div>
-      <div class="feature-desc">AIの分析レポートを日本語・英語どちらでも生成できます。ワンクリックで切り替え可能。</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">⚡</div>
-      <div class="feature-title">無料・オープンソース</div>
-      <div class="feature-desc">MITライセンスで完全無料。サブスクリプションなし。広告なし。コードは全公開でカスタマイズ自由。</div>
-    </div>
-  </div>
-</section>
-
-<!-- SETUP -->
-<section class="setup" id="setup">
-  <div class="setup-inner">
-    <div class="section-label">Setup</div>
-    <h2 class="section-title">3ステップで起動。</h2>
-    <p class="section-sub">Node.jsとOllamaがあれば、5分で動きます。</p>
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <div class="step-body">
-          <div class="step-title">Ollamaをインストールしてモデルをダウンロード</div>
-          <div class="step-desc"><a href="https://ollama.com" target="_blank" style="color:var(--accent)">ollama.com</a> からインストール後、ターミナルで：</div>
-          <pre>ollama pull llama3.2</pre>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <div class="step-body">
-          <div class="step-title">リポジトリをクローンして起動</div>
-          <pre>git clone https://github.com/CHUNK-jp/mirrorhealth.git
-cd mirrorhealth
-npm install
-npm run dev</pre>
-          <div class="step-desc" style="margin-top:0.5rem">ブラウザで <code style="background:#1a1a1a;padding:0.1rem 0.4rem;border-radius:4px;font-size:0.8rem">http://localhost:3000</code> を開く。</div>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <div class="step-body">
-          <div class="step-title">Apple Healthからデータをエクスポートしてドロップするだけ</div>
-          <div class="step-desc">iPhoneの「ヘルスケア」→ プロフィールアイコン → 「ヘルスケアデータを書き出す」。Zipのなかのexport.xmlをブラウザにドロップするだけです。</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CTA -->
-<section class="cta-section">
-  <h2>今すぐ、あなたの健康を<br>手元に取り戻す。</h2>
-  <p>無料・登録不要・データはあなたのもの。</p>
-  <div class="cta-btns">
-    <a class="btn-hero-primary" href="https://github.com/CHUNK-jp/mirrorhealth" target="_blank" rel="noopener">
-      ⬇ GitHubで入手する
-    </a>
-    <a class="btn-hero-secondary" href="https://github.com/CHUNK-jp/mirrorhealth/issues" target="_blank" rel="noopener">
-      🐛 バグ報告・要望
-    </a>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-links">
-    <a href="/">← CHUNK-jp トップ</a>
-    <a href="https://github.com/CHUNK-jp/mirrorhealth" target="_blank" rel="noopener">GitHub</a>
-    <a href="/privacy.html">Privacy</a>
-    <a href="/contact.html">Contact</a>
-  </div>
-  <p>© 2025 <a href="https://github.com/CHUNK-jp" target="_blank" rel="noopener">CHUNK-jp</a> · MirrorHealth はMITライセンスのオープンソースソフトウェアです。</p>
-</footer>
 
 </body>
 </html>
