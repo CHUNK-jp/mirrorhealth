@@ -5,9 +5,12 @@
 :root {
   --bg: #0d0d0d;
   --bg2: #141414;
+  --bg3: #1a1a1a;
   --border: #2a2a2a;
+  --border2: #333;
   --text: #e8e8e8;
   --muted: #888;
+  --text-dim: #555;
   --accent: #7c6aff;
   --accent2: #a08fff;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
@@ -34,69 +37,41 @@ nav.site-nav {
   border-bottom: 1px solid var(--border);
 }
 
-nav.site-nav .nav-logo {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-family: var(--font-mono);
-  font-size: 0.92rem;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  color: var(--text);
-  text-decoration: none;
-}
-
-nav.site-nav .nav-logo .org { color: var(--muted); }
-nav.site-nav .nav-logo .sep { color: var(--border); margin: 0 2px; }
-
-nav.site-nav .nav-links {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-nav.site-nav .nav-links a {
-  font-size: 0.85rem;
+nav.site-nav .nav-breadcrumb {
+  font-size: 0.875rem;
   color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+nav.site-nav .nav-breadcrumb a { color: var(--muted); text-decoration: none; }
+nav.site-nav .nav-breadcrumb a:hover { color: var(--text); }
+nav.site-nav .nav-breadcrumb .sep { color: var(--text-dim); }
+nav.site-nav .nav-breadcrumb .current { color: var(--text); font-weight: 500; }
+
+nav.site-nav .nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+nav.site-nav .nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
   text-decoration: none;
-  transition: color 0.15s;
+  border: 1px solid var(--border2);
+  color: var(--muted);
+  background: transparent;
+  transition: all 0.15s;
+  white-space: nowrap;
 }
 
-nav.site-nav .nav-links a:hover { color: var(--text); }
-
-nav.site-nav .btn-portal {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  background: #1a1a1a;
-  border: 1px solid var(--border);
-  padding: 0.35rem 0.8rem;
-  border-radius: 6px;
-  font-size: 0.82rem;
-  color: var(--text);
-  transition: border-color 0.15s, background 0.15s, color 0.15s;
-}
-
-nav.site-nav .btn-portal:hover {
-  border-color: var(--accent);
-  color: var(--accent2);
-  background: rgba(124, 106, 255, 0.08);
-}
-
-nav.site-nav .btn-gh {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  background: #1a1a1a;
-  border: 1px solid var(--border);
-  padding: 0.35rem 0.8rem;
-  border-radius: 6px;
-  font-size: 0.82rem;
-  color: var(--text);
-  transition: border-color 0.15s, background 0.15s;
-}
-
-nav.site-nav .btn-gh:hover { border-color: #555; background: #222; }
+nav.site-nav .nav-btn:hover { color: var(--text); border-color: #444; background: var(--bg3); }
 
 /* Markdown rendering inside AI insights */
 .prose-health h1,
