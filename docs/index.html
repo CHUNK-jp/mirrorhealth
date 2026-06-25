@@ -23,6 +23,9 @@
     .nav-link { font-size: 14px; color: #71717A; text-decoration: none; padding: 6px 12px; border-radius: 6px; transition: color 0.15s, background 0.15s; }
     .nav-link:hover { color: #FAFAFA; background: #111113; }
 
+    .brand-logo { display: flex; align-items: center; gap: 10px; flex-shrink: 0; text-decoration: none; color: inherit; }
+    .brand-logo:hover { text-decoration: none; color: inherit; }
+
     .btn-primary { display: inline-flex; align-items: center; gap: 8px; background: #3B82F6; color: #fff; font-size: 13px; font-weight: 500; padding: 8px 18px; border-radius: 8px; text-decoration: none; flex-shrink: 0; letter-spacing: -0.01em; transition: background 0.15s; }
     .btn-primary:hover { background: #2563EB; }
 
@@ -80,14 +83,14 @@
   <nav style="position: sticky; top: 0; z-index: 100;">
     <div style="background: rgba(9,9,11,0.85); border-bottom: 1px solid #18181B; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);">
       <div class="nav-inner" style="max-width: 1100px; margin: 0 auto; padding: 0 24px; display: flex; align-items: center; height: 64px; gap: 40px;">
-        <div style="display: flex; align-items: center; gap: 10px; flex-shrink: 0;">
+        <a class="brand-logo" href="https://chunk-jp.github.io/">
           <div style="width: 32px; height: 32px; background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
             <svg viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="17" height="17">
               <path d="M2 12h4l2.5-6 5 13 3-9 2.5 5L21 12h1"/>
             </svg>
           </div>
           <span style="font-size: 15px; font-weight: 600; letter-spacing: -0.01em;">MirrorHealth</span>
-        </div>
+        </a>
         <div class="nav-links-wrap" style="display: flex; align-items: center; gap: 4px; flex: 1;">
           <a class="nav-link" href="#how-it-works">How it works</a>
           <a class="nav-link" href="#metrics">Metrics</a>
