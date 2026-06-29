@@ -66,7 +66,7 @@ export function HealthCharts({ summary }: Props) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {/* Steps */}
-      <ChartCard title="📶 日別歩数（直近30日）">
+      <ChartCard title="📶 Daily Steps (Last 30 Days)">
         <ResponsiveContainer width="100%" height={160}>
           <BarChart data={last30(summary.steps)} style={CHART_STYLE} barSize={6}>
             <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
@@ -74,7 +74,7 @@ export function HealthCharts({ summary }: Props) {
             <YAxis tick={{ fill: "#6b7280", fontSize: 10 }} width={40} />
             <Tooltip
               contentStyle={tooltipStyle}
-              formatter={(v: number) => [v?.toLocaleString() + " 歩", "歩数"]}
+              formatter={(v: number) => [v?.toLocaleString() + " steps", "Steps"]}
               labelFormatter={shortDate}
             />
             <ReferenceLine y={10000} stroke="#3b82f6" strokeDasharray="4 2" strokeOpacity={0.5} />
@@ -84,7 +84,7 @@ export function HealthCharts({ summary }: Props) {
       </ChartCard>
 
       {/* Heart Rate */}
-      <ChartCard title="❤️ 心拍数（直近30日）">
+      <ChartCard title="❤️ Heart Rate (Last 30 Days)">
         <ResponsiveContainer width="100%" height={160}>
           <AreaChart data={nonZero(last30(summary.heartRate))} style={CHART_STYLE}>
             <defs>
@@ -98,7 +98,7 @@ export function HealthCharts({ summary }: Props) {
             <YAxis tick={{ fill: "#6b7280", fontSize: 10 }} width={35} domain={["auto", "auto"]} />
             <Tooltip
               contentStyle={tooltipStyle}
-              formatter={(v: number) => [v + " bpm", "心拍数"]}
+              formatter={(v: number) => [v + " bpm", "Heart Rate"]}
               labelFormatter={shortDate}
             />
             <Area
@@ -115,7 +115,7 @@ export function HealthCharts({ summary }: Props) {
       </ChartCard>
 
       {/* Sleep */}
-      <ChartCard title="🌙 睡眠時間（直近30日）">
+      <ChartCard title="🌙 Sleep Duration (Last 30 Days)">
         <ResponsiveContainer width="100%" height={160}>
           <BarChart data={last30(summary.sleep)} style={CHART_STYLE} barSize={6}>
             <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" />
@@ -123,7 +123,7 @@ export function HealthCharts({ summary }: Props) {
             <YAxis tick={{ fill: "#6b7280", fontSize: 10 }} width={30} domain={[0, 12]} />
             <Tooltip
               contentStyle={tooltipStyle}
-              formatter={(v: number) => [v + " 時間", "睡眠"]}
+              formatter={(v: number) => [v + " hrs", "Sleep"]}
               labelFormatter={shortDate}
             />
             <ReferenceLine y={7} stroke="#a855f7" strokeDasharray="4 2" strokeOpacity={0.5} />
@@ -134,7 +134,7 @@ export function HealthCharts({ summary }: Props) {
       </ChartCard>
 
       {/* HRV */}
-      <ChartCard title="💚 HRV・心拍変動（直近30日）">
+      <ChartCard title="💚 HRV (Last 30 Days)">
         <ResponsiveContainer width="100%" height={160}>
           <AreaChart data={nonZero(last30(summary.hrv))} style={CHART_STYLE}>
             <defs>

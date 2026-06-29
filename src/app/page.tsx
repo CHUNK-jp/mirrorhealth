@@ -42,7 +42,7 @@ export default function Home() {
 
   async function handleFile(file: File) {
     if (!file.name.endsWith(".xml") && file.type !== "text/xml" && file.type !== "application/xml") {
-      setError("Apple Healthからエクスポートした export.xml ファイルをアップロードしてください");
+      setError("Please upload the export.xml file exported from Apple Health.");
       setState("error");
       return;
     }
@@ -61,7 +61,7 @@ export default function Home() {
 
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error ?? "解析に失敗しました");
+        throw new Error(data.error ?? "Failed to parse health data.");
       }
 
       const data: HealthSummary = await res.json();
@@ -105,9 +105,9 @@ export default function Home() {
             <h1 className="text-3xl font-bold text-white">MirrorHealth</h1>
           </div>
           <p className="text-gray-400 max-w-sm">
-            あなたの健康データを、あなたのデバイスだけで、AIが分析します。
+            Your health data, analyzed by AI, entirely on your device.
             <br />
-            <span className="text-green-400 font-medium">クラウドに一切送信しません。</span>
+            <span className="text-green-400 font-medium">Never sent to the cloud.</span>
           </p>
         </div>
 
@@ -125,8 +125,8 @@ export default function Home() {
         >
           <Upload size={40} className={dragging ? "text-green-400" : "text-gray-500"} />
           <div className="text-center">
-            <p className="text-white font-medium">export.xml をドロップ</p>
-            <p className="text-gray-500 text-sm mt-1">またはクリックしてファイルを選択</p>
+            <p className="text-white font-medium">Drop export.xml here</p>
+            <p className="text-gray-500 text-sm mt-1">or click to select a file</p>
           </div>
           <input
             id="health-file"
@@ -146,13 +146,13 @@ export default function Home() {
         {/* How to export */}
         <div className="mt-8 max-w-md w-full bg-gray-900 border border-gray-800 rounded-xl p-4 text-sm text-gray-400 space-y-2">
           <p className="text-white font-medium text-sm flex items-center gap-2">
-            <ShieldCheck size={15} className="text-green-400" /> Apple Healthからのエクスポート方法
+            <ShieldCheck size={15} className="text-green-400" /> How to export from Apple Health
           </p>
           <ol className="list-decimal pl-4 space-y-1 text-gray-400">
-            <li>iPhoneの「ヘルスケア」アプリを開く</li>
-            <li>右上のプロフィールアイコンをタップ</li>
-            <li>「ヘルスケアデータを書き出す」をタップ</li>
-            <li>Zipファイルを展開し、<code className="bg-gray-800 px-1 rounded">export.xml</code> をアップロード</li>
+            <li>Open the Health app on your iPhone</li>
+            <li>Tap your profile icon in the top right</li>
+            <li>Tap "Export All Health Data"</li>
+            <li>Unzip the file and upload <code className="bg-gray-800 px-1 rounded">export.xml</code></li>
           </ol>
         </div>
 
@@ -163,7 +163,7 @@ export default function Home() {
           className="mt-8 flex items-center gap-2 text-gray-500 hover:text-gray-300 text-sm transition-colors"
         >
           <Github size={16} />
-          GitHub でスターを付ける
+          Star on GitHub
         </a>
       </div>
     );
@@ -174,8 +174,8 @@ export default function Home() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-4">
         <Loader2 size={40} className="text-green-400 animate-spin" />
-        <p className="text-gray-300 font-medium">健康データを解析中...</p>
-        <p className="text-gray-500 text-sm">大きいファイルは少し時間がかかります</p>
+        <p className="text-gray-300 font-medium">Parsing health data...</p>
+        <p className="text-gray-500 text-sm">Large files may take a moment</p>
       </div>
     );
   }
@@ -189,7 +189,7 @@ export default function Home() {
           <FileHeart size={24} className="text-green-400" />
           <h1 className="text-xl font-bold text-white">MirrorHealth</h1>
           <span className="text-xs text-gray-500">
-            {summary!.exportDate} エクスポート · {summary!.totalDays}日分のデータ
+            Exported {summary!.exportDate} · {summary!.totalDays} days of data
           </span>
         </div>
         <div className="flex items-center gap-2">
@@ -206,26 +206,26 @@ export default function Home() {
             className="flex items-center gap-1 text-xs px-3 py-1.5 rounded-lg bg-gray-800 border border-gray-700 text-gray-400 hover:text-gray-200 transition-colors"
           >
             <X size={12} />
-            別のファイルを開く
+            Open another file
           </button>
         </div>
       </div>
 
       {/* Metric cards */}
       <section className="mb-6">
-        <h2 className="text-xs text-gray-500 uppercase tracking-wider mb-3">7日間平均</h2>
+        <h2 className="text-xs text-gray-500 uppercase tracking-wider mb-3">7-Day Average</h2>
         <MetricCards summary={summary!} />
       </section>
 
       {/* Charts */}
       <section className="mb-6">
-        <h2 className="text-xs text-gray-500 uppercase tracking-wider mb-3">トレンド</h2>
+        <h2 className="text-xs text-gray-500 uppercase tracking-wider mb-3">Trends</h2>
         <HealthCharts summary={summary!} />
       </section>
 
       {/* AI Insights */}
       <section className="mb-8">
-        <h2 className="text-xs text-gray-500 uppercase tracking-wider mb-3">AIインサイト</h2>
+        <h2 className="text-xs text-gray-500 uppercase tracking-wider mb-3">AI Insights</h2>
         <AIInsights
           summary={summary!}
           ollamaRunning={ollamaStatus.running}
@@ -234,7 +234,7 @@ export default function Home() {
       </section>
 
       <footer className="text-center text-xs text-gray-700 pb-4">
-        MirrorHealth — すべてのデータ処理はあなたのデバイス上で完結します
+        MirrorHealth — All data processing happens entirely on your device
       </footer>
     </div>
   );

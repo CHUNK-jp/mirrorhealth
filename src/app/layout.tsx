@@ -5,8 +5,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MirrorHealth — プライベートAI健康分析",
-  description: "あなたの健康データを、あなたのデバイスだけで、AIが分析します。",
+  title: "MirrorHealth — Private AI Health Analysis",
+  description: "Your health data, analyzed by AI, entirely on your device.",
 };
 
 export default function RootLayout({
@@ -15,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja">
+    <html lang="en">
       <body className={inter.className}>
         <nav className="site-nav">
           <div className="nav-breadcrumb">

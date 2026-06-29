@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const summary: HealthSummary = body.summary;
     const model: string = body.model ?? DEFAULT_MODEL;
-    const language: "ja" | "en" = body.language ?? "ja";
+    const language: "ja" | "en" = body.language ?? "en";
 
     if (!summary) {
       return new Response("No health summary provided", { status: 400 });
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     if (!ollamaRes.ok) {
       const errorText = await ollamaRes.text();
       return new Response(
-        `Ollama error: ${ollamaRes.status} — ${errorText}\n\nOllamaが起動していることを確認してください: ollama serve`,
+        `Ollama error: ${ollamaRes.status} — ${errorText}\n\nMake sure Ollama is running: ollama serve`,
         { status: 502 }
       );
     }
