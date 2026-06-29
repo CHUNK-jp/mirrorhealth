@@ -86,6 +86,9 @@
       .cta-section { padding: 0 20px 64px !important; }
       .cta-box { padding: 48px 24px !important; }
       h2 { font-size: 28px !important; }
+      .preview-section { padding: 48px 20px 64px !important; }
+      .dashboard-stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+      .dashboard-charts-grid { grid-template-columns: minmax(0, 1fr) !important; }
     }
   </style>
 </head>
@@ -439,6 +442,188 @@
           </div>
         </div>
 
+      </div>
+    </div>
+  </section>
+
+  <!-- ── DASHBOARD PREVIEW ── -->
+  <section id="preview" class="preview-section" style="padding: 80px 24px 120px;">
+    <div style="max-width: 1100px; margin: 0 auto;">
+      <div style="text-align: center; margin-bottom: 56px;">
+        <div style="display: inline-block; font-size: 11px; font-weight: 600; color: #52525B; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px;">Dashboard</div>
+        <h2 style="font-weight: 700; letter-spacing: -0.03em; margin-bottom: 16px; text-wrap: balance;">See It In Action</h2>
+        <p style="font-size: 18px; color: #71717A; max-width: 480px; margin: 0 auto; line-height: 1.6;">A snapshot of what MirrorHealth surfaces from your Apple Health data</p>
+      </div>
+
+      <div style="position: relative; border-radius: 16px; overflow: hidden; border: 1px solid #27272A; box-shadow: 0 0 0 1px #18181B, 0 32px 96px rgba(0,0,0,0.65), 0 0 140px rgba(59,130,246,0.05);">
+
+        <div style="position: absolute; top: 14px; right: 16px; z-index: 10; font-size: 10px; font-weight: 700; color: #3B82F6; background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.25); border-radius: 5px; padding: 3px 9px; letter-spacing: 0.1em; font-family: 'JetBrains Mono', monospace;">PREVIEW</div>
+
+        <div style="background: #0E0E11; border-bottom: 1px solid #1E1E24; padding: 13px 20px; display: flex; align-items: center; gap: 8px;">
+          <div style="display: flex; gap: 7px; align-items: center;">
+            <div style="width: 12px; height: 12px; border-radius: 50%; background: #FF5F57;"></div>
+            <div style="width: 12px; height: 12px; border-radius: 50%; background: #FEBC2E;"></div>
+            <div style="width: 12px; height: 12px; border-radius: 50%; background: #28C840;"></div>
+          </div>
+          <div style="flex: 1; text-align: center; padding-right: 46px;">
+            <span style="font-size: 12px; font-weight: 500; color: #3F3F46; letter-spacing: -0.01em;">MirrorHealth</span>
+          </div>
+        </div>
+
+        <div style="padding: 20px; background: #0D0D0F;">
+
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; padding: 0 2px;">
+            <div style="display: flex; align-items: center; gap: 9px;">
+              <div style="width: 26px; height: 26px; background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.2); border-radius: 6px; display: flex; align-items: center; justify-content: center;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><path d="M2 12h4l2.5-6 5 13 3-9 2.5 5L21 12h1"/></svg>
+              </div>
+              <span style="font-size: 13px; font-weight: 600; letter-spacing: -0.01em;">Today's Overview</span>
+            </div>
+            <span style="font-size: 11px; color: #52525B; font-family: 'JetBrains Mono', monospace;">Mon, Jun 30</span>
+          </div>
+
+          <div class="dashboard-stats-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 8px;">
+            <div style="background: #111113; border: 1px solid #1E1E24; border-radius: 10px; padding: 16px 16px 12px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                <span style="font-size: 10px; color: #52525B; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Steps</span>
+                <span style="font-size: 14px; line-height: 1;">🦶</span>
+              </div>
+              <div style="font-size: 24px; font-weight: 700; font-family: 'JetBrains Mono', monospace; letter-spacing: -0.03em; color: #FAFAFA; line-height: 1; margin-bottom: 4px;">8,432</div>
+              <div style="font-size: 10px; color: #52525B; margin-bottom: 10px;">goal: 10,000</div>
+              <div style="height: 3px; background: #1E1E24; border-radius: 2px; overflow: hidden;">
+                <div style="height: 100%; width: 84.3%; background: #3B82F6; border-radius: 2px;"></div>
+              </div>
+              <div style="font-size: 10px; color: #3B82F6; margin-top: 4px; font-family: 'JetBrains Mono', monospace;">84%</div>
+            </div>
+
+            <div style="background: #111113; border: 1px solid #1E1E24; border-radius: 10px; padding: 16px 16px 12px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                <span style="font-size: 10px; color: #52525B; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Calories</span>
+                <span style="font-size: 14px; line-height: 1;">🔥</span>
+              </div>
+              <div style="font-size: 24px; font-weight: 700; font-family: 'JetBrains Mono', monospace; letter-spacing: -0.03em; color: #FAFAFA; line-height: 1; margin-bottom: 4px;">1,847</div>
+              <div style="font-size: 10px; color: #52525B;">kcal active</div>
+            </div>
+
+            <div style="background: #111113; border: 1px solid #1E1E24; border-radius: 10px; padding: 16px 16px 12px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                <span style="font-size: 10px; color: #52525B; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Resting HR</span>
+                <span style="font-size: 14px; line-height: 1;">❤️</span>
+              </div>
+              <div style="font-size: 24px; font-weight: 700; font-family: 'JetBrains Mono', monospace; letter-spacing: -0.03em; color: #FAFAFA; line-height: 1; margin-bottom: 4px;">62</div>
+              <div style="font-size: 10px; color: #52525B;">bpm</div>
+            </div>
+
+            <div style="background: #111113; border: 1px solid #1E1E24; border-radius: 10px; padding: 16px 16px 12px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                <span style="font-size: 10px; color: #52525B; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">HRV</span>
+                <span style="font-size: 14px; line-height: 1;">💜</span>
+              </div>
+              <div style="font-size: 24px; font-weight: 700; font-family: 'JetBrains Mono', monospace; letter-spacing: -0.03em; color: #FAFAFA; line-height: 1; margin-bottom: 4px;">48 <span style="font-size: 13px; color: #71717A; font-weight: 400;">ms</span></div>
+              <div style="font-size: 10px; color: #22C55E; font-weight: 600; margin-top: 6px;">+3 vs last week ↑</div>
+            </div>
+          </div>
+
+          <div class="dashboard-charts-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+            <div style="background: #111113; border: 1px solid #1E1E24; border-radius: 10px; padding: 18px 18px 14px;">
+              <div style="font-size: 11px; font-weight: 600; color: #A1A1AA; margin-bottom: 14px; letter-spacing: -0.01em;">Weekly Steps</div>
+              <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; height: 72px; align-items: end; margin-bottom: 6px;">
+                <div style="display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end;">
+                  <div style="width: 100%; height: 55%; background: rgba(59,130,246,0.3); border-radius: 3px 3px 0 0;"></div>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end;">
+                  <div style="width: 100%; height: 70%; background: rgba(59,130,246,0.3); border-radius: 3px 3px 0 0;"></div>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end;">
+                  <div style="width: 100%; height: 81%; background: rgba(59,130,246,0.3); border-radius: 3px 3px 0 0;"></div>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end;">
+                  <div style="width: 100%; height: 48%; background: rgba(59,130,246,0.3); border-radius: 3px 3px 0 0;"></div>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end;">
+                  <div style="width: 100%; height: 79%; background: rgba(59,130,246,0.3); border-radius: 3px 3px 0 0;"></div>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end;">
+                  <div style="width: 100%; height: 100%; background: rgba(59,130,246,0.3); border-radius: 3px 3px 0 0;"></div>
+                </div>
+                <div style="display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end;">
+                  <div style="width: 100%; height: 75%; background: #3B82F6; border-radius: 3px 3px 0 0; box-shadow: 0 0 10px rgba(59,130,246,0.45);"></div>
+                </div>
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px;">
+                <div style="text-align: center; font-size: 9px; color: #52525B; font-family: 'JetBrains Mono', monospace;">M</div>
+                <div style="text-align: center; font-size: 9px; color: #52525B; font-family: 'JetBrains Mono', monospace;">T</div>
+                <div style="text-align: center; font-size: 9px; color: #52525B; font-family: 'JetBrains Mono', monospace;">W</div>
+                <div style="text-align: center; font-size: 9px; color: #52525B; font-family: 'JetBrains Mono', monospace;">T</div>
+                <div style="text-align: center; font-size: 9px; color: #52525B; font-family: 'JetBrains Mono', monospace;">F</div>
+                <div style="text-align: center; font-size: 9px; color: #52525B; font-family: 'JetBrains Mono', monospace;">S</div>
+                <div style="text-align: center; font-size: 9px; color: #3B82F6; font-family: 'JetBrains Mono', monospace; font-weight: 700;">S</div>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-top: 10px;">
+                <span style="font-size: 10px; color: #3F3F46;">Mon – Sun</span>
+                <span style="font-size: 10px; color: #3F3F46; font-family: 'JetBrains Mono', monospace;">avg 8,190</span>
+              </div>
+            </div>
+
+            <div style="background: #111113; border: 1px solid #1E1E24; border-radius: 10px; padding: 18px 18px 14px;">
+              <div style="font-size: 11px; font-weight: 600; color: #A1A1AA; margin-bottom: 4px; letter-spacing: -0.01em;">Last Night's Sleep</div>
+              <div style="font-size: 22px; font-weight: 700; font-family: 'JetBrains Mono', monospace; letter-spacing: -0.03em; color: #FAFAFA; margin-bottom: 14px; line-height: 1.2;">7h 45m</div>
+              <div style="height: 8px; border-radius: 4px; overflow: hidden; display: flex; margin-bottom: 16px;">
+                <div style="width: 28%; background: #3B82F6;"></div>
+                <div style="width: 48%; background: #8B5CF6;"></div>
+                <div style="width: 19%; background: #22C55E;"></div>
+                <div style="width: 5%; background: #F59E0B;"></div>
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 7px;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <div style="display: flex; align-items: center; gap: 7px;">
+                    <div style="width: 8px; height: 8px; border-radius: 2px; background: #3B82F6; flex-shrink: 0;"></div>
+                    <span style="font-size: 11px; color: #71717A;">Deep</span>
+                  </div>
+                  <span style="font-size: 11px; font-family: 'JetBrains Mono', monospace; color: #A1A1AA;">2h 10m</span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <div style="display: flex; align-items: center; gap: 7px;">
+                    <div style="width: 8px; height: 8px; border-radius: 2px; background: #8B5CF6; flex-shrink: 0;"></div>
+                    <span style="font-size: 11px; color: #71717A;">Core</span>
+                  </div>
+                  <span style="font-size: 11px; font-family: 'JetBrains Mono', monospace; color: #A1A1AA;">3h 45m</span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <div style="display: flex; align-items: center; gap: 7px;">
+                    <div style="width: 8px; height: 8px; border-radius: 2px; background: #22C55E; flex-shrink: 0;"></div>
+                    <span style="font-size: 11px; color: #71717A;">REM</span>
+                  </div>
+                  <span style="font-size: 11px; font-family: 'JetBrains Mono', monospace; color: #A1A1AA;">1h 30m</span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <div style="display: flex; align-items: center; gap: 7px;">
+                    <div style="width: 8px; height: 8px; border-radius: 2px; background: #F59E0B; flex-shrink: 0;"></div>
+                    <span style="font-size: 11px; color: #71717A;">Awake</span>
+                  </div>
+                  <span style="font-size: 11px; font-family: 'JetBrains Mono', monospace; color: #A1A1AA;">20m</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="background: #111113; border: 1px solid #1E1E24; border-left: 2px solid #3B82F6; border-radius: 10px; padding: 18px 20px;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 10px;">
+              <div style="width: 7px; height: 7px; border-radius: 50%; background: #3B82F6; box-shadow: 0 0 7px rgba(59,130,246,0.65); flex-shrink: 0;"></div>
+              <span style="font-size: 10px; font-weight: 700; color: #3B82F6; text-transform: uppercase; letter-spacing: 0.08em; font-family: 'JetBrains Mono', monospace;">AI Insight · Powered by Ollama (local)</span>
+            </div>
+            <p style="font-size: 13px; color: #E4E4E7; line-height: 1.75; margin-bottom: 12px;">Your HRV has improved 12% over the past two weeks, correlating with your increased sleep consistency. Consider maintaining your current bedtime window of 11pm–7am.</p>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <svg viewBox="0 0 16 16" fill="none" stroke="#3F3F46" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><path d="M8 3L2 6v4c0 3.3 2.7 6 6 6s6-2.7 6-6V6L8 3z"/><path d="M5.5 8l2 2 3-3"/></svg>
+              <span style="font-size: 10px; color: #52525B;">Analysis runs entirely on your Mac. No data is sent to any server.</span>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; margin-top: 10px; padding: 0 2px;">
+            <span style="font-size: 10px; color: #3F3F46; font-family: 'JetBrains Mono', monospace;">Last synced: today at 7:14 AM</span>
+          </div>
+
+        </div>
       </div>
     </div>
   </section>
